@@ -1,5 +1,4 @@
 ![HomeWork 🏠🛠️](https://raw.github.com/0age/HomeWork/master/images/HomeWork.svg?sanitize=true)
-<img src="https://raw.github.com/0age/HomeWork/master/images/HomeWork.svg?sanitize=true?sanitize=true">
 
 # HomeWork 🏠🛠️
 
