@@ -71,7 +71,7 @@ $ yarn coverage
 
 ## API
 
-**This documentation is incomplete - see the [HomeWork interface](https://github.com/0age/HomeWork/blob/master/interfaces/IHomeWork.sol), other interfaces, and the contract itself for a more complete summary.**
+**This documentation is incomplete - see the [HomeWork interface](https://github.com/0age/HomeWork/blob/master/interfaces/IHomeWork.sol), other interfaces, and the [HomeWork contract](https://github.com/0age/HomeWork/blob/master/contracts/HomeWork.sol) itself for a more complete summary.**
 
 ```Solidity
 interface IHomeWork {
