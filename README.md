@@ -1,6 +1,6 @@
 ![HomeWork 🏠🛠️](https://raw.github.com/0age/HomeWork/master/images/HomeWork.svg?sanitize=true)
 
-# HomeWork 🏠🛠️
+# HomeWork
 
 ![GitHub](https://img.shields.io/github/license/0age/HomeWork.svg?colorB=brightgreen)
 [![Build Status](https://travis-ci.org/0age/HomeWork.svg?branch=master)](https://travis-ci.org/0age/HomeWork)
