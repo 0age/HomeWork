@@ -4,6 +4,7 @@
 
 ![GitHub](https://img.shields.io/github/license/0age/HomeWork.svg?colorB=brightgreen)
 [![Build Status](https://travis-ci.org/0age/HomeWork.svg?branch=master)](https://travis-ci.org/0age/HomeWork)
+[![Coverage](https://coveralls.io/repos/github/0age/HomeWork/badge.svg?branch=master)](https://coveralls.io/github/0age/HomeWork?branch=master)
 [![standard-readme compliant](https://img.shields.io/badge/standard--readme-OK-green.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
 
