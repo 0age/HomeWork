@@ -9,8 +9,9 @@ before_install:
   - sudo apt-get update -qq
   - sudo apt-get install -y -qq yarn
 install:
+  - yarn global add coveralls
   - yarn install
 script:
-  - yarn ci
+  - yarn ci && cat coverage/lcov.info | coveralls
 cache:
   yarn: true
