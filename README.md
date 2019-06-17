@@ -12,7 +12,7 @@
 
 A **home address** is a dedicated account where a specific controller can deploy arbitrary contracts. Unlike a standard contract deployment, where the deployment address is determined by rigid factors like the nonce of the deployer or the contract's creation code, home address contract deployments relax the usual constraints and allow *any* contract to be deployed to a specific address.
 
-Each home address is tied to a specific **key**, or 32-byte identifier, that uniquely identifies it. Each key has a dedicated controller, an approved manager of the key with the exclusive right to deploy contracts to the corresponding home address. By default, each key is initially controlled by the account address matching the first twenty bytes of said key. Control of keys can easily be transferred, either to other accounts and contracts, or to HomeWork itself by locking the home address and minting an NFT.
+Each home address is uniquely identified by a specific 32-byte **key**. Each key has a dedicated controller, an account with the exclusive right to deploy contracts to the corresponding home address. By default, each key is initially controlled by the account whose address matches the first twenty bytes of said key. Alternately, they can be derived using a full 32-byte salt for any submitting account. Control of keys can easily be transferred, either to other accounts and contracts, or to HomeWork itself by locking the home address and minting an NFT.
 
 HomeWork implements **ERC721**, and will take control of any home address without a deployed contract in exchange for a corresponding NFT. The owner of the NFT can then redeem it in order to gain control over deployment to the designated home address. There's no external issuer or anything, so each token must first be discovered and claimed by a valid submitter.
 
@@ -25,6 +25,7 @@ You can find HomeWork at `0x0000000000001b84b1cb32787B0D64758d019317` *(yes, the
 - [Install](#install)
 - [Usage](#usage)
 - [API](#api)
+- [Methodology](#methodology)
 - [Maintainers](#maintainers)
 - [Contribute](#contribute)
 - [License](#license)
@@ -140,6 +141,54 @@ interface IERC721 {
     function safeTransferFrom(address from, address to, uint256 tokenId, bytes calldata data) external;
 }
 ```
+
+## Methodology
+HomeWork deploys contracts using the **metamorphic delegator** pattern. The same contract creation bytecode is used for all deployments, but the bytecode is non-deterministic: it simply retrieves an account address from HomeWork, then performs a `DELEGATECALL` to that address and passes along the return or revert values. The contract at the retrieved address is a **runtime storage contract** that contains the creation code for the *actual* contract. Constructor logic is executed in the context of the home address, and the runtime code returned by the `DELEGATECALL` will be set as the runtime code of the home address.
+
+The metamorphic delegator pattern confers a few key benefits over other metamorphic deployment methods:
+- Constructors are fully supported *(in contrast to patterns where code is simply cloned from another account)*
+- Address derivation can be performed in one hash / step *(vs. using a transient metamorphic contract, deployed via `CREATE2` that deploys the target contract via `CREATE` and `SELFDESTRUCT`s, which takes 2 steps)*
+- Runtime storage contracts do not need to be deployed every time and can safely be reused *(as opposed to retrieving, deploying, and delegatecalling all in the scope of the metamorphic creation code)*
+
+Here's the 32-byte sequence for deploying contracts:
+```
+0x5859385958601c335a585952fa1582838382515af43d3d93833e601e57fd5bf3
+
+PC  OP  NAME             [STACK] + <MEMORY> + {RETURN} + *RUNTIME*
+--  --  ---------------  ----------------------------------------------------
+00  58  PC               [0]
+01  59  MSIZE            [0, 0]
+02  38  CODESIZE         [0, 0, codesize -> 32]
+03  59  MSIZE            [0, 0, 32, 0]
+04  58  PC               [0, 0, 32, 0, 4]
+05  60  PUSH1 0x1c       [0, 0, 32, 0, 4, 28]
+07  33  CALLER           [0, 0, 32, 0, 4, 28, caller]
+08  5a  GAS              [0, 0, 32, 0, 4, 28, caller, gas]
+09  58  PC               [0, 0, 32, 0, 4, 28, caller, gas, 9 -> selector]
+10  59  MSIZE            [0, 0, 32, 0, 4, 28, caller, gas, selector, 0]
+11  52  MSTORE           [0, 0, 32, 0, 4, 28, caller, gas] <selector>
+12  fa  STATICCALL       [0, 0, 1 => success] <init_in_runtime_address>
+13  15  ISZERO           [0, 0, 0]
+14  82  DUP3             [0, 0, 0, 0]
+15  83  DUP4             [0, 0, 0, 0, 0]
+16  83  DUP4             [0, 0, 0, 0, 0, 0]
+17  82  DUP3             [0, 0, 0, 0, 0, 0, 0]
+18  51  MLOAD            [0, 0, 0, 0, 0, 0, init_in_runtime_address]
+19  5a  GAS              [0, 0, 0, 0, 0, 0, init_in_runtime_address, gas]
+20  f4  DELEGATECALL     [0, 0, 1 => success] {runtime_code}
+21  3d  RETURNDATASIZE   [0, 0, 1 => success, size]
+22  3d  RETURNDATASIZE   [0, 0, 1 => success, size, size]
+23  93  SWAP4            [size, 0, 1 => success, size, 0]
+24  83  DUP4             [size, 0, 1 => success, size, 0, 0]
+25  3e  RETURNDATACOPY   [size, 0, 1 => success] <runtime_code>
+26  60  PUSH1 0x1e       [size, 0, 1 => success, 30]
+28  57  JUMPI            [size, 0]
+29  fd  REVERT           [] *runtime_code*
+30  5b  JUMPDEST         [size, 0]
+31  f3  RETURN           []
+```
+
+Bear in mind that contract verification is much more difficult to achieve with contracts deployed, or redeployed, using *any* metamorphic method.
 
 ## Maintainers
 
