@@ -20,6 +20,8 @@ HomeWork implements **ERC721**, and will take control of any home address withou
 
 You can find HomeWork at `0x0000000000001b84b1cb32787B0D64758d019317` *(yes, there are six zero bytes at the start)* on [mainnet](https://etherscan.io/address/0x0000000000001b84b1cb32787b0d64758d019317), [ropsten](https://ropsten.etherscan.io/address/0x0000000000001b84b1cb32787b0d64758d019317), [goerli](https://goerli.etherscan.io/address/0x0000000000001b84b1cb32787b0d64758d019317), [rinkeby](https://rinkeby.etherscan.io/address/0x0000000000001b84b1cb32787b0d64758d019317), and [kovan](https://kovan.etherscan.io/address/0x0000000000001b84b1cb32787b0d64758d019317) - contract verification is, uh, *challenging*, but you can verify it by checking out the [deployment contract](https://etherscan.io/address/0x07cf8f81852a58dd26fa19e69545f72e263347e5#contracts), including the contract creation code from the deployment's [runtime storage contract](0x000000000071C1c84915c17BF21728BfE4Dac3f3).
 
+To learn more about what HomeWork is all about, check out [this article](https://medium.com/@0age/on-efficient-ethereum-transactions-introducing-homework-6ae4f21801ed).
+
 ## Table of Contents
 
 - [Install](#install)
