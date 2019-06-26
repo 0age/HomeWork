@@ -182,12 +182,12 @@ PC  OP  NAME             [STACK] + <MEMORY> + {RETURN} + *RUNTIME*
 22  3d  RETURNDATASIZE   [0, 0, 1 => success, size, size]
 23  93  SWAP4            [size, 0, 1 => success, size, 0]
 24  83  DUP4             [size, 0, 1 => success, size, 0, 0]
-25  3e  RETURNDATACOPY   [size, 0, 1 => success] <runtime_code>
+25  3e  RETURNDATACOPY   [size, 0, 1 => success] <runtime_code_or_revert_msg>
 26  60  PUSH1 0x1e       [size, 0, 1 => success, 30]
 28  57  JUMPI            [size, 0]
-29  fd  REVERT           [] *runtime_code*
+29  fd  REVERT           [] {revert_msg}
 30  5b  JUMPDEST         [size, 0]
-31  f3  RETURN           []
+31  f3  RETURN           [] *runtime_code*
 ```
 
 Bear in mind that contract verification is much more difficult to achieve with contracts deployed, or redeployed, using *any* metamorphic method.
