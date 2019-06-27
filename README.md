@@ -79,6 +79,56 @@ $ yarn coverage
 ```
 
 ## API
+#### Standard Keys
+* [`deploy`](#deploy)
+* [`assignController`](#assigncontroller)
+* [`relinquishControl`](#relinquishcontrol)
+* [`setReverseLookup`](#setreverselookup)
+
+#### Derived Keys
+* [`deriveKey`](#derivekey)
+* [`deriveKeyAndDeploy`](#derivekeyanddeploy)
+* [`deriveKeyAndAssignController`](#derivekeyandassigncontroller)
+* [`deriveKeyAndRelinquishControl`](#derivekeyandrelinquishcontrol)
+* [`setDerivedReverseLookup`](#setderivedreverselookup)
+
+#### Home Address NFTs
+* [`lock`](#lock)
+* [`redeem`](#redeem)
+* [`redeemAndDeploy`](#redeemanddeploy)
+* [`deriveKeyAndLock`](#derivekeyandlock)
+* [`batchLock`](#batchlock)
+* [`deriveKeysAndBatchLock`](#derivekeysandbatchlock)
+
+#### View Functions
+* [`isDeployable`](#isdeployable)
+* [`getHighScore`](#gethighscore)
+* [`getHomeAddressInformation`](#gethomeaddressinformation)
+* [`hasNeverBeenDeployed`](#hasneverbeendeployed)
+* [`reverseLookup`](#reverselookup)
+
+#### Pure Functions
+* [`getDerivedKey`](#getderivedkey)
+* [`getHomeAddress`](#gethomeaddress)
+* [`getMetamorphicDelegatorInitializationCode`](#getmetamorphicdelegatorinitializationcode)
+* [`getMetamorphicDelegatorInitializationCodeHash`](#getmetamorphicdelegatorinitializationcodehash)
+* [`getArbitraryRuntimeCodePrelude`](#getarbitraryruntimecodeprelude)
+
+#### Events
+* [`event NewResident`](#newresident-event)
+* [`event NewRuntimeStorageContract`](#newruntimestoragecontract-event)
+* [`event NewController`](#newcontroller-event)
+* [`event NewHighScore`](#newhighscore-event)
+
+### Advanced Usage
+* [`deployRuntimeStorageContract`](#deployruntimestoragecontract)
+* [`deployViaExistingRuntimeStorageContract`](#deployviaexistingruntimestoragecontract)
+* [`deriveKeyAndDeployViaExistingRuntimeStorageContract`](#derivekeyanddeployviaexistingruntimestoragecontract)
+* [`redeemAndDeployViaExistingRuntimeStorageContract`](#redeemanddeployviaexistingruntimestoragecontract)
+* [`batchLock_63efZf`](#batchlock_63efzf)
+* [`claimHighScore`](#claimhighscore)
+* [`recover`](#recover)
+
 ```Solidity
 interface IHomeWork {
   event NewResident(address indexed homeAddress, bytes32 key, bytes32 runtimeCodeHash);
