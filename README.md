@@ -141,6 +141,8 @@ interface IERC721 {
 }
 ```
 
+> *Note: ERC721 and related interfaces not included as part of this documentation.*
+
 ### deploy
 ---
 ```Solidity
@@ -297,7 +299,6 @@ Derive a new key by concatenating an arbitrary 32-byte salt value and the addres
 | *bytes32* | key | The derived key. |
 
 > Home addresses from derived keys will take longer to "mine" or locate, as an additional hash must be performed when computing the corresponding home address for each given salt input. Each caller will derive a different key, even if they are supplying the same salt value.
----
 
 ### deriveKeyAndLock
 ---
