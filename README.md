@@ -185,7 +185,7 @@ interface IERC721 {
 * [`event NewController`](#newcontroller-event)
 * [`event NewHighScore`](#newhighscore-event)
 
-### Advanced Usage
+#### Advanced Usage
 * [`deployRuntimeStorageContract`](#deployruntimestoragecontract)
 * [`deployViaExistingRuntimeStorageContract`](#deployviaexistingruntimestoragecontract)
 * [`deriveKeyAndDeployViaExistingRuntimeStorageContract`](#derivekeyanddeployviaexistingruntimestoragecontract)
