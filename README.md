@@ -27,7 +27,7 @@ To learn more about HomeWork, check out [this article](https://medium.com/@0age/
 - [Install](#install)
 - [Usage](#usage)
 - [API](#api)
-- [Methodology](#methodology)
+- [How It Works](#how-it-works)
 - [Maintainers](#maintainers)
 - [Contribute](#contribute)
 - [License](#license)
@@ -841,7 +841,7 @@ Pure function for retrieving the metamorphic initialization code used to deploy 
 |-|-|-|
 | *bytes32* | metamorphicDelegatorInitializationCode | The 32-byte metamorphic initialization code. |
 
-> This metamorphic init code works via the "metamorphic delegator" mechanism, which is explained in greater detail in the "Methodology" section.
+> This metamorphic init code works via the "metamorphic delegator" mechanism, which is explained in greater detail in the "How It Works" section.
 
 ### getMetamorphicDelegatorInitializationCodeHash
 ---
@@ -935,7 +935,7 @@ Fires when a new high score is submitted.
 | *uint256* | score | The current high score. |
 
 
-## Methodology
+## How It Works
 HomeWork deploys contracts using the **metamorphic delegator** pattern. The same contract creation bytecode is used for all deployments, but the bytecode is non-deterministic: it simply retrieves an account address from HomeWork, then performs a `DELEGATECALL` to that address and passes along the return or revert values. The contract at the retrieved address is a **runtime storage contract** that contains the creation code for the *actual* contract. Constructor logic is executed in the context of the home address, and the runtime code returned by the `DELEGATECALL` will be set as the runtime code of the home address.
 
 The metamorphic delegator pattern confers a few key benefits over other metamorphic deployment methods:
