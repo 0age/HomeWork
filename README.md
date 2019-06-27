@@ -142,6 +142,7 @@ interface IERC721 {
 ```
 
 ### deploy
+---
 ```Solidity
 function deploy(bytes32 key, bytes calldata initializationCode)
   external
@@ -173,9 +174,9 @@ These conditions can be checked by calling `getHomeAddressInformation` and `isDe
 > Also, if your contract DOES have constructor arguments, remember to include them as ABI-encoded arguments at the end of the initialization code, just as you would when performing a standard deploy.
 > 
 > You may also want to provide the key to `setReverseLookup` in order to find it again using only the home address to prevent accidentally losing the key.
----
 
-## lock
+### lock
+---
 ```Solidity
 function lock(bytes32 key, address owner) external;
 ```
@@ -194,9 +195,9 @@ These conditions can be checked by calling `getHomeAddressInformation` and `isDe
 > In order to mint an ERC721 token, the assocated home address cannot be in use, or else the token will not be able to deploy to the home address. The controller is set to this contract until the token is redeemed and burned, at which point the redeemer designates a new controller for the home address.
 > 
 > The key of the home address and the tokenId of the ERC721 token are the same value, but different types *(bytes32 vs. uint256)*.
----
 
 ### redeem
+---
 ```Solidity
 function redeem(uint256 tokenId, address controller) external;
 ```
@@ -209,9 +210,9 @@ Burn an ERC721 NFT to allow the supplied controller to gain the ability to deplo
 | *address* | controller | The account that will be granted control of the home address corresponding to the given NFT. |
 
 > The controller cannot be designated as the address of this contract, the null address, or the home address *(the restriction on setting the home address as the controller is due to the fact that the home address will not be able to deploy to itself, as it needs to be empty before a contract can be deployed to it)*.
----
 
 ### assignController
+---
 ```Solidity
 function assignController(bytes32 key, address controller) external;
 ```
@@ -224,9 +225,9 @@ Transfer control over deployment to the home address corresponding to a given ke
 | *address* | controller | The account that will be granted control of the home address corresponding to the given key. |
 
 > The controller cannot be designated as the address of this contract, the null address, or the home address *(the restriction on setting the home address as the controller is due to the fact that the home address will not be able to deploy to itself, as it needs to be empty before a contract can be deployed to it)*.
----
 
 ### relinquishControl
+---
 ```Solidity
 function relinquishControl(bytes32 key) external;
 ```
@@ -236,9 +237,9 @@ Transfer control over deployment to the home address corresponding to a given ke
 | | | |
 |-|-|-|
 | *bytes32* | key | The unique value used to derive the home address. |
----
 
 ### redeemAndDeploy
+---
 ```Solidity
 function redeemAndDeploy(
   uint256 tokenId,
@@ -277,9 +278,9 @@ These conditions can be checked by calling either `ownerOf` or `getApproved` for
 > The controller cannot be designated as the address of this contract, the null address, or the home address (the restriction on setting the home address as the controller is due to the fact that the home address will not be able to deploy to itself, as it needs to be empty before a contract can be deployed to it).
 > 
 > Also, checks on the contract at the home address being empty or not having the correct controller are unnecessary, as they are performed when minting the token and cannot be altered until the token is redeemed.
----
 
 ### deriveKey
+---
 ```Solidity
 function deriveKey(bytes32 salt) external returns (bytes32 key);
 ```
@@ -299,6 +300,7 @@ Derive a new key by concatenating an arbitrary 32-byte salt value and the addres
 ---
 
 ### deriveKeyAndLock
+---
 ```Solidity
 function deriveKeyAndLock(bytes32 salt, address owner)
   external
@@ -324,9 +326,9 @@ These conditions can be checked by calling `getHomeAddressInformation` and `isDe
 > In order to mint an ERC721 token, the assocated home address cannot be in use, or else the token will not be able to deploy to the home address. The controller is set to this contract until the token is redeemed, at which point the redeemer designates a new controller for the home address.
 > 
 > The key of the home address and the tokenId of the ERC721 token are the same value, but different types *(bytes32 vs. uint256)*.
----
 
 ### deriveKeyAndAssignController
+---
 ```Solidity
 function deriveKeyAndAssignController(bytes32 salt, address controller)
   external
@@ -346,9 +348,9 @@ Transfer control over deployment to the home address corresponding to a given de
 | *bytes32* | key | The derived key. |
 
 > The controller cannot be designated as the address of this contract, the null address, or the home address *(the restriction on setting the home address as the controller is due to the fact that the home address will not be able to deploy to itself, as it needs to be empty before a contract can be deployed to it)*.
----
 
 ### deriveKeyAndRelinquishControl
+---
 ```Solidity
 function deriveKeyAndRelinquishControl(bytes32 salt)
   external
@@ -366,9 +368,8 @@ Transfer control over deployment to the home address corresponding to a given de
 |-|-|-|
 | *bytes32* | key | The derived key. |
 
----
-
 ### setReverseLookup
+---
 ```Solidity
 function setReverseLookup(bytes32 key) external;
 ```
@@ -382,9 +383,9 @@ This method may be called by anyone - control of the key is not required.
 | *bytes32* | key | The unique value used to derive the home address. |
 
 > This does not set the salt or submitter fields, as those apply only to derived keys *(although a derived key may also be set with this method, just without the derived fields)*.
----
 
 ### setDerivedReverseLookup
+---
 ```Solidity
 function setDerivedReverseLookup(bytes32 salt, address submitter) external;
 ```
@@ -398,9 +399,8 @@ This method may be called by anyone - control of the derived key is not required
 | *bytes32* | salt | The desired salt value to use *(along with the address of the caller)* when deriving the resultant key and corresponding home address. |
 | *address* | submitter | The account that can submit the salt that is used to derive the key. |
 
----
-
 ### deployRuntimeStorageContract
+---
 ```Solidity
 function deployRuntimeStorageContract(bytes calldata codePayload)
   external
@@ -421,9 +421,9 @@ Deploy a new storage contract with the supplied code as runtime code without dep
 > If you plan on reusing the runtime storage contract, consider placing adequate protections on it to prevent unwanted callers from modifying or destroying it. 
 > 
 > Also, if you are placing contract contract creation code into the runtime storage contract, remember to include any constructor parameters as ABI-encoded arguments at the end of the contract creation code, similar to how you would perform a standard deployment.
----
 
 ### deployViaExistingRuntimeStorageContract
+---
 ```Solidity
 function deployViaExistingRuntimeStorageContract(
   bytes32 key,
@@ -458,9 +458,9 @@ These conditions can be checked by calling `getHomeAddressInformation` and `isDe
 > Also, if your contract DOES have constructor arguments, remember to include them as ABI-encoded arguments at the end of the initialization code, just as you would when performing a standard deploy.
 > 
 > You may also want to provide the key to `setReverseLookup` in order to find it again using only the home address to prevent accidentally losing the key.
----
 
 ### redeemAndDeployViaExistingRuntimeStorageContract
+---
 ```Solidity
 function redeemAndDeployViaExistingRuntimeStorageContract(
   uint256 tokenId,
@@ -501,9 +501,9 @@ These conditions can be checked by calling either `ownerOf` or `getApproved` for
 > The controller cannot be designated as the address of this contract, the null address, or the home address (the restriction on setting the home address as the controller is due to the fact that the home address will not be able to deploy to itself, as it needs to be empty before a contract can be deployed to it).
 > 
 > Also, checks on the contract at the home address being empty or not having the correct controller are unnecessary, as they are performed when minting the token and cannot be altered until the token is redeemed.
----
 
 ### deriveKeyAndDeploy
+---
 ```Solidity
 function deriveKeyAndDeploy(bytes32 salt, bytes calldata initializationCode)
   external
@@ -537,9 +537,9 @@ These conditions can be checked by calling `getHomeAddressInformation` and `isDe
 > Also, if your contract DOES have constructor arguments, remember to include them as ABI-encoded arguments at the end of the initialization code, just as you would when performing a standard deploy.
 > 
 > You may want to provide the salt and submitter to `setDerivedReverseLookup` in order to find the salt, submitter, and derived key using only the home address to prevent accidentally losing them.
----
 
 ### deriveKeyAndDeployViaExistingRuntimeStorageContract
+---
 ```Solidity
 function deriveKeyAndDeployViaExistingRuntimeStorageContract(
   bytes32 salt,
@@ -576,9 +576,9 @@ These conditions can be checked by calling `getHomeAddressInformation` and `isDe
 > Also, if your contract DOES have constructor arguments, remember to include them as ABI-encoded arguments at the end of the initialization code, just as you would when performing a standard deploy.
 > 
 > You may want to provide the salt and submitter to `setDerivedReverseLookup` in order to find the salt, submitter, and derived key using only the home address to prevent accidentally losing them.
----
 
 ### batchLock
+---
 ```Solidity
 function batchLock(address owner, bytes32[] calldata keys) external;
 ```
@@ -593,9 +593,9 @@ Mint multiple ERC721 tokens, designated by their keys, to the specified owner. K
 > If you plan to use this method regularly or want to keep gas costs to an absolute minimum, and are willing to go without standard ABI encoding, see `batchLock_63efZf` for a more efficient (and unforgiving) implementation.
 > 
 > For batch token minting with *derived* keys, see `deriveKeysAndBatchLock`.
----
 
 ### deriveKeysAndBatchLock
+---
 ```Solidity
 function deriveKeysAndBatchLock(address owner, bytes32[] calldata salts)
   external;
@@ -609,9 +609,9 @@ Mint multiple ERC721 tokens, designated by salts that are hashed with the caller
 | *bytes32[]* | salts | An array of values used to derive each key and corresponding home address. |
 
 > See `batchLock` for batch token minting with standard, non-derived keys.
----
 
 ### batchLock_63efZf
+---
 ```Solidity
 function batchLock_63efZf(/* packed owner and key segments */) external;
 ```
@@ -624,9 +624,9 @@ A function selector of `0x00000000` followed by a twenty-byte segment for the de
 > Note that an attempt to lock a key that is not controlled, or one with its contract already deployed, will cause the entire batch to revert.
 > 
 > Checks on whether the owner is a valid ERC721 receiver are also skipped, similar to using `transferFrom` instead of `safeTransferFrom`.
----
 
 ### claimHighScore
+---
 ```Solidity
 function claimHighScore(bytes32 key) external;
 ```
@@ -642,9 +642,9 @@ The high score holder has the exclusive right to recover lost ether and tokens o
 > The high score must be claimed by a direct key *(one that is submitted by setting the first twenty bytes of the key to the address of the submitter)* and not by a derived key, and is non-transferable.
 > 
 > If you want to help people recover their lost tokens, you might consider deploying a contract to the high score address *(probably a destructible one so that you can use the home address later)* with your contact information.
----
 
 ### recover
+---
 ```Solidity
 function recover(IERC20 token, address payable recipient) external;
 ```
@@ -659,9 +659,9 @@ Only the high score holder can recover lost ether and tokens on this contract.
 | *address* | recipient | The account where recovered funds should be transferred. |
 
 > If you are trying to recover funds that were accidentally sent into this contract, see if you can contact the holder of the current high score, found by calling `getHighScore`. Better yet, try to find a new high score yourself!
----
 
 ### isDeployable
+---
 ```Solidity
 function isDeployable(bytes32 key)
   external
@@ -687,9 +687,9 @@ function isDeployable(bytes32 key)
 > This method does not modify state but is inaccessible via `STATICCALL` *(well, it actually does modify state, but only temporarily)*.
 > 
 > This method will not detect if a contract is not deployable due control having been relinquished on the key.
----
 
 ### getHighScore
+---
 ```Solidity
 function getHighScore()
   external
@@ -705,9 +705,8 @@ View function to get the current "high score", or the lowest uint160 value of a 
 | *uint256* | score | The current high score. |
 | *bytes32* | key | The key that was submitted to obtain the current high score. |
 
----
-
 ### getHomeAddressInformation
+---
 ```Solidity
 function getHomeAddressInformation(bytes32 key)
   external
@@ -737,9 +736,9 @@ View function to get information on a home address given the corresponding key.
 > There is also an `isDeployable` method for determining if a contract can be deployed to the address, but in extreme cases it must actually perform a dry-run to determine if the contract is deployable, which means that it does not support `STATICCALL`s.
 > 
 > There is also a convenience method, `hasNeverBeenDeployed`, but the information it conveys can be determined from this method alone as well.
----
 
 ### hasNeverBeenDeployed
+---
 ```Solidity
 function hasNeverBeenDeployed(bytes32 key)
   external
@@ -758,9 +757,8 @@ View function to determine if no contract has ever been deployed to a home addre
 |-|-|-|
 | *bool* | neverBeenDeployed | A boolean signifying if a contract has never been deployed using the supplied key before. |
 
----
-
 ### reverseLookup
+---
 ```Solidity
 function reverseLookup(address homeAddress)
   external
@@ -785,9 +783,9 @@ View function to search for a known key, salt, and/or submitter given a supplied
 > To populate these values, call `setReverseLookup` for cases where keys are used directly or are the only value known, and `setDerivedReverseLookup` for cases where keys are derived from a known salt and submitter.
 > 
 > The absence of a submitter does not necessarily mean that the key is not a derived key. All it implies is that the salt and submitter were not provided. However, the *existence* of a submitter does imply that the key is a derived key *(and not a standard key)*.
----
 
 ### getDerivedKey
+---
 ```Solidity
 function getDerivedKey(bytes32 salt, address submitter)
   external
@@ -807,9 +805,8 @@ Pure function to determine the key that is derived from a given salt and submitt
 |-|-|-|
 | *bytes32* | key | The derived key. |
 
----
-
 ### getHomeAddress
+---
 ```Solidity
 function getHomeAddress(bytes32 key)
   external
@@ -828,9 +825,8 @@ Pure function to determine the home address that corresponds to a given key.
 |-|-|-|
 | *address* | homeAddress | The home address of the supplied key. |
 
----
-
 ### getMetamorphicDelegatorInitializationCode
+---
 ```Solidity
 function getMetamorphicDelegatorInitializationCode()
   external
@@ -845,9 +841,9 @@ Pure function for retrieving the metamorphic initialization code used to deploy 
 | *bytes32* | metamorphicDelegatorInitializationCode | The 32-byte metamorphic initialization code. |
 
 > This metamorphic init code works via the "metamorphic delegator" mechanism, which is explained in greater detail in the "Methodology" section.
----
 
 ### getMetamorphicDelegatorInitializationCodeHash
+---
 ```Solidity
 function getMetamorphicDelegatorInitializationCodeHash()
   external
@@ -860,9 +856,9 @@ Pure function for retrieving the keccak256 of the metamorphic initialization cod
 | | | |
 |-|-|-|
 | *bytes32* | metamorphicDelegatorInitializationCodeHash | The keccak256 hash of the metamorphic initialization code. |
----
 
 ### getArbitraryRuntimeCodePrelude
+---
 ```Solidity
 function getArbitraryRuntimeCodePrelude()
   external
@@ -876,9 +872,8 @@ Pure function for retrieving the prelude that will be inserted ahead of the code
 |-|-|-|
 | *bytes11* | prelude | The 11-byte "arbitrary runtime" prelude. |
 
----
-
 ### NewResident event
+---
 ```Solidity
 event NewResident(
   address indexed homeAddress,
@@ -895,9 +890,8 @@ Fires when a contract is deployed or redeployed to a given home address.
 | *bytes32* | key | The key corresponding to the home address. |
 | *bytes32* | runtimeCodeHash | The runtime code hash of the deployed contract. |
 
----
-
 ### NewRuntimeStorageContract event
+---
 ```Solidity
 event NewRuntimeStorageContract(
   address runtimeStorageContract,
@@ -912,9 +906,8 @@ Fires when a new runtime storage contract is deployed.
 | *address* | runtimeStorageContract | The address of the deployed runtime storage contract. |
 | *bytes32* | runtimeCodeHash | The runtime code hash of the deployed contract. |
 
----
-
 ### NewController event
+---
 ```Solidity
 event NewController(bytes32 indexed key, address newController);
 ```
@@ -926,9 +919,8 @@ Fires when a controller is changed from the default controller.
 | *bytes32* | key | The key for which control has been reassigned. |
 | *address* | controller | The account that has been granted control of the given key. |
 
----
-
 ### NewHighScore event
+---
 ```Solidity
 event NewHighScore(bytes32 key, address submitter, uint256 score);
 ```
@@ -940,7 +932,6 @@ Fires when a new high score is submitted.
 | *bytes32* | key | The key that was submitted to obtain the current high score. |
 | *address* | holder | The account that submitted the current high score. |
 | *uint256* | score | The current high score. |
----
 
 
 ## Methodology
