@@ -987,12 +987,12 @@ Fires when a new high score is submitted.
 
 
 ## How It Works
-HomeWork deploys contracts using the **metamorphic delegator** pattern. The same contract creation bytecode is used for all deployments, but the bytecode is non-deterministic: it simply retrieves an account address from HomeWork, then performs a `DELEGATECALL` to that address and passes along the return or revert values. The contract at the retrieved address is a **runtime storage contract** that contains the creation code for the *actual* contract. Constructor logic is executed in the context of the home address, and the runtime code returned by the `DELEGATECALL` will be set as the runtime code of the home address.
+HomeWork deploys contracts using the **metamorphic delegator** pattern. The same contract creation bytecode is used for all deployments, but the bytecode is non-deterministic: it simply retrieves an account address from HomeWork, then performs a `DELEGATECALL` to that address, executing the bytecode there and passing along the return or revert values. The contract at the retrieved address is a **runtime storage contract** that contains the **contract creation code** for the *actual* contract. Constructor logic is executed in the context of the home address, and the runtime code returned by the `DELEGATECALL` will be set as the runtime code of the home address.
 
 The metamorphic delegator pattern confers a few key benefits over other metamorphic deployment methods:
 - Constructors are fully supported *(in contrast to patterns where code is simply cloned from another account)*
 - Address derivation can be performed in one hash / step *(vs. using a transient metamorphic contract, deployed via `CREATE2` that deploys the target contract via `CREATE` and `SELFDESTRUCT`s, which takes 2 steps)*
-- Runtime storage contracts do not need to be deployed every time and can safely be reused *(as opposed to retrieving, deploying, and delegatecalling all in the scope of the metamorphic creation code)*
+- Runtime storage contracts do not need to be deployed every time and can safely be reused *(as opposed to retrieving, deploying, and `DELEGATECALL`ing all in the scope of the metamorphic creation code)*
 
 Here's the 32-byte sequence for deploying contracts:
 ```
@@ -1019,7 +1019,7 @@ PC  OP  NAME             [STACK] + <MEMORY> + {RETURN} + *RUNTIME*
 17  82  DUP3             [0, 0, 0, 0, 0, 0, 0]
 18  51  MLOAD            [0, 0, 0, 0, 0, 0, init_in_runtime_address]
 19  5a  GAS              [0, 0, 0, 0, 0, 0, init_in_runtime_address, gas]
-20  f4  DELEGATECALL     [0, 0, 1 => success] {runtime_code}
+20  f4  DELEGATECALL     [0, 0, 1 => success] {runtime_code_or_revert_msg}
 21  3d  RETURNDATASIZE   [0, 0, 1 => success, size]
 22  3d  RETURNDATASIZE   [0, 0, 1 => success, size, size]
 23  93  SWAP4            [size, 0, 1 => success, size, 0]
