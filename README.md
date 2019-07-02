@@ -18,7 +18,7 @@ HomeWork implements **ERC721**, and will take control of any home address withou
 
 **DISCLAIMER: this implements highly experimental features / bugs - Be careful! These contracts have not yet been fully tested or audited - proceed with caution and please share any exploits or optimizations you discover.**
 
-You can find HomeWork at `0x0000000000001b84b1cb32787B0D64758d019317` *(yes, there are six zero bytes at the start)* on [mainnet](https://etherscan.io/address/0x0000000000001b84b1cb32787b0d64758d019317), [ropsten](https://ropsten.etherscan.io/address/0x0000000000001b84b1cb32787b0d64758d019317), [goerli](https://goerli.etherscan.io/address/0x0000000000001b84b1cb32787b0d64758d019317), [rinkeby](https://rinkeby.etherscan.io/address/0x0000000000001b84b1cb32787b0d64758d019317), and [kovan](https://kovan.etherscan.io/address/0x0000000000001b84b1cb32787b0d64758d019317) - contract verification is, uh, *challenging*, but you can verify it by checking out the [deployment contract](https://etherscan.io/address/0x07cf8f81852a58dd26fa19e69545f72e263347e5#contracts), including the contract creation code from the deployment's [runtime storage contract](0x000000000071C1c84915c17BF21728BfE4Dac3f3).
+You can find HomeWork V1 at `0x0000000000001b84b1cb32787B0D64758d019317` *(yes, there are six zero bytes at the start)* on [mainnet](https://blockscout.com/eth/mainnet/address/0x0000000000001b84b1cb32787b0d64758d019317/contracts), [ropsten](https://ropsten.etherscan.io/address/0x0000000000001b84b1cb32787b0d64758d019317), [goerli](https://goerli.etherscan.io/address/0x0000000000001b84b1cb32787b0d64758d019317), [rinkeby](https://rinkeby.etherscan.io/address/0x0000000000001b84b1cb32787b0d64758d019317), and [kovan](https://kovan.etherscan.io/address/0x0000000000001b84b1cb32787b0d64758d019317).
 
 To learn more about HomeWork, check out [this article](https://medium.com/@0age/on-efficient-ethereum-transactions-introducing-homework-6ae4f21801ed).
 
@@ -64,6 +64,8 @@ To try it out, start by deploying a contract by choosing an account to submit fr
 Two big caveats to be aware of:
 - `msg.sender` will refer to HomeWork, not to the submitter - you can still get at the submitter by calling into HomeWork *(easiest if you set a reverse lookup for the home address first)*, or you can just include it as a constructor arg.
 - you won’t be able to deploy any contract to a home address that already has a contract deployed. If you deploy a contract that can’t be removed via `SELFDESTRUCT`, HomeWork’s job is done and it will not be able to interact with that home address anymore. *(Well, state rent might change that...)*
+
+Contract verification for contracts deployed via HomeWork is supported by the [BlockScout](https://blockscout.com/eth/mainnet/) block explorer.
 
 To run tests locally, start the testRPC, trigger the tests, run the linter, and tear down the testRPC *(you can do all of this at once via* `yarn all` *if you prefer)*:
 ```sh
@@ -1031,8 +1033,6 @@ PC  OP  NAME             [STACK] + <MEMORY> + {RETURN} + *RUNTIME*
 30  5b  JUMPDEST         [size, 0]
 31  f3  RETURN           [] *runtime_code*
 ```
-
-Bear in mind that contract verification is much more difficult to achieve with contracts deployed, or redeployed, using *any* metamorphic method.
 
 ## Maintainers
 
