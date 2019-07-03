@@ -3,6 +3,7 @@ contracts/mock/MockCodeCheck.sol
 contracts/mock/MockContract.sol
 contracts/mock/MockERC20Stub.sol
 contracts/mock/MockERC721Holder.sol
+contracts/mock/MockHomeWorkWrapper.sol
 contracts/mock/MockReentryPartOne.sol
 contracts/mock/MockReentryPartTwo.sol
 contracts/mock/MockRevertContract.sol

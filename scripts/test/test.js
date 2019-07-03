@@ -12,6 +12,8 @@ const MockERC20StubArtifact = require('../../build/contracts/MockERC20Stub.json'
 const MockERC721HolderArtifact = require('../../build/contracts/MockERC721Holder.json')
 const MockReentryPartOneArtifact = require('../../build/contracts/MockReentryPartOne.json')
 const MockReentryPartTwoArtifact = require('../../build/contracts/MockReentryPartTwo.json')
+const MockHomeWorkWrapperArtifact = require('../../build/contracts/MockHomeWorkWrapper.json')
+const MockUninheritedHomeWorkWrapperArtifact = require('../../build/contracts/HomeWorkWrapper.json')
 
 const METAMORPHIC_INIT_CODE = '0x5859385958601c335a585952fa1582838382515af43d3d93833e601e57fd5bf3'
 const METAMORPHIC_INIT_CODE_HASH = '0x7816562e7f85866cae07183593075f3b5ec32aeff914a0693e20aaf39672babc'
@@ -616,6 +618,20 @@ module.exports = {test: async function (provider, testingContext) {
     MockERC721HolderArtifact.bytecode
   )
 
+  MockHomeWorkWrapperDeployer = new web3.eth.Contract(
+    MockHomeWorkWrapperArtifact.abi
+  )
+  MockHomeWorkWrapperDeployer.options.data = (
+    MockHomeWorkWrapperArtifact.bytecode
+  )
+
+  MockUninheritedHomeWorkWrapperDeployer = new web3.eth.Contract(
+    MockUninheritedHomeWorkWrapperArtifact.abi
+  )
+  MockUninheritedHomeWorkWrapperDeployer.options.data = (
+    MockUninheritedHomeWorkWrapperArtifact.bytecode
+  )
+
   await runTest(
     `HomeWork direct contract deployment fails`,
     HomeWorkFailedDeployer,
@@ -642,6 +658,20 @@ module.exports = {test: async function (provider, testingContext) {
   const MockERC721Holder = await runTest(
     `MockERC721Holder contract deployment`,
     MockERC721HolderDeployer,
+    '',
+    'deploy'
+  )
+
+  const MockHomeWorkWrapper = await runTest(
+    `MockHomeWorkWrapper contract deployment`,
+    MockHomeWorkWrapperDeployer,
+    '',
+    'deploy'
+  )
+
+  const MockUninheritedHomeWorkWrapper = await runTest(
+    `MockUninheritedHomeWorkWrapper contract deployment`,
+    MockUninheritedHomeWorkWrapperDeployer,
     '',
     'deploy'
   )
@@ -4971,6 +5001,363 @@ module.exports = {test: async function (provider, testingContext) {
   
   // TODO: ensure that the payable functions pass all funds along when paid
   // TODO: more reentrancy tests (where deployed contracts call into HomeWork)
+
+  await runTest(
+    'MockHomeWorkWrapper is reachable',
+    MockHomeWorkWrapper,
+    'totalSupply',
+    'call',
+    [],
+    true,
+    value => {
+      assert.strictEqual(value, '0')
+    }
+  )
+
+  await runTest(
+    'HomeWork can call lock and mint a new NFT',
+    HomeWork,
+    'lock',
+    'send',
+    [
+      address + 'f00f00f00f00f00f00f00f00',
+      address
+    ],
+    true,
+    receipt => {
+      let newControllerEvent
+      if (testingContext === 'coverage') {
+        newControllerEvent = receipt.events.NewController[0].returnValues
+      } else {
+        newControllerEvent = receipt.events.NewController.returnValues
+      }
+
+      assert.strictEqual(
+        newControllerEvent.key,
+        address.toLowerCase() + 'f00f00f00f00f00f00f00f00'
+      )
+      assert.strictEqual(
+        newControllerEvent.newController,
+        HomeWork.options.address
+      )
+
+      let transferEvent
+      if (testingContext === 'coverage') {
+        transferEvent = receipt.events.Transfer[0].returnValues
+      } else {
+        transferEvent = receipt.events.Transfer.returnValues
+      }
+
+      assert.strictEqual(transferEvent.from, nullAddress)
+      assert.strictEqual(transferEvent.to, address)
+      assert.strictEqual(
+        transferEvent.tokenId,
+        web3.utils.toBN(address + 'f00f00f00f00f00f00f00f00').toString(10)
+      )
+    }
+  )
+
+  await runTest(
+    'MockHomeWorkWrapper call to onERC721Received with tokenId 0 fails',
+    MockHomeWorkWrapper,
+    'onERC721Received',
+    'send',
+    [
+      nullAddress,
+      nullAddress,
+      0,
+      '0x'
+    ],
+    false
+  )
+
+  await runTest(
+    'MockHomeWorkWrapper call to onERC721Received with non-existent token fails',
+    MockHomeWorkWrapper,
+    'onERC721Received',
+    'send',
+    [
+      nullAddress,
+      nullAddress,
+      1,
+      '0x'
+    ],
+    false
+  )
+
+  await runTest(
+    'MockHomeWorkWrapper call to onERC721Received with non-transferred token fails',
+    MockHomeWorkWrapper,
+    'onERC721Received',
+    'send',
+    [
+      address,
+      address,
+      address + 'f00f00f00f00f00f00f00f00',
+      '0x'
+    ],
+    false
+  )
+
+  await runTest(
+    'MockHomeWorkWrapper call to wrap with tokenId 0 fails',
+    MockHomeWorkWrapper,
+    'wrap',
+    'send',
+    [
+      0,
+      nullAddress
+    ],
+    false
+  )
+
+  await runTest(
+    'MockHomeWorkWrapper call to wrap with non-existent token fails',
+    MockHomeWorkWrapper,
+    'wrap',
+    'send',
+    [
+      1,
+      nullAddress
+    ],
+    false
+  )
+
+  await runTest(
+    'MockHomeWorkWrapper call to wrap with non-approved token fails',
+    MockHomeWorkWrapper,
+    'wrap',
+    'send',
+    [
+      address + 'f00f00f00f00f00f00f00f00',
+      address
+    ],
+    false
+  )
+
+  await runTest(
+    'MockHomeWorkWrapper call to unwrap with tokenId 0 fails',
+    MockHomeWorkWrapper,
+    'unwrap',
+    'send',
+    [
+      0,
+      nullAddress
+    ],
+    false
+  )
+
+  await runTest(
+    'MockHomeWorkWrapper call to unwrap with non-existent token fails',
+    MockHomeWorkWrapper,
+    'unwrap',
+    'send',
+    [
+      1,
+      nullAddress
+    ],
+    false
+  )
+
+  await runTest(
+    'HomeWork cannot call safeTransferFrom to send to wrapper with invalid data',
+    HomeWork,
+    'safeTransferFrom',
+    'send',
+    [
+      address,
+      MockHomeWorkWrapper.options.address,
+      address + 'f00f00f00f00f00f00f00f00',
+      '0xabcdef'
+    ],
+    false
+  )
+
+  await runTest(
+    'HomeWork cannot call safeTransferFrom when owner cannot receive ERC721s',
+    HomeWork,
+    'safeTransferFrom',
+    'send',
+    [
+      address,
+      MockHomeWorkWrapper.options.address,
+      address + 'f00f00f00f00f00f00f00f00',
+      '0x' + HomeWork.options.address.slice(2).padStart(64, '0')
+    ],
+    false
+  )
+
+  await runTest(
+    'HomeWork can call safeTransferFrom to send to wrapper',
+    HomeWork,
+    'safeTransferFrom',
+    'send',
+    [
+      address,
+      MockHomeWorkWrapper.options.address,
+      address + 'f00f00f00f00f00f00f00f00'
+    ],
+    true,
+    receipt => {
+      if (testingContext !== 'coverage') {
+        let transferEventOne = receipt.events.Transfer[0].returnValues
+        let transferEventTwo = receipt.events.Transfer[1].returnValues
+
+        assert.strictEqual(transferEventOne.from, address)
+        assert.strictEqual(
+          transferEventOne.to,
+          MockHomeWorkWrapper.options.address
+        )
+        assert.strictEqual(
+          transferEventOne.tokenId,
+          web3.utils.toBN(address + 'f00f00f00f00f00f00f00f00').toString(10)
+        )
+
+        assert.strictEqual(transferEventTwo.from, nullAddress)
+        assert.strictEqual(transferEventTwo.to, address)
+        assert.strictEqual(transferEventTwo.tokenId, '1')
+      }
+    }
+  )
+
+  await runTest(
+    'MockHomeWorkWrapper call to onERC721Received with already-wrapped token fails',
+    MockHomeWorkWrapper,
+    'onERC721Received',
+    'send',
+    [
+      address,
+      address,
+      address + 'f00f00f00f00f00f00f00f00',
+      '0x'
+    ],
+    false
+  )
+
+  await runTest(
+    'HomeWorkWrapper can call unwrap',
+    MockHomeWorkWrapper,
+    'unwrap',
+    'send',
+    [
+      1,
+      address
+    ],
+    true,
+    receipt => {
+      if (testingContext !== 'coverage') {
+        let transferEventOne = receipt.events.Transfer[0].returnValues
+        let transferEventTwo = receipt.events.Transfer[1].returnValues
+
+        assert.strictEqual(transferEventOne.from, address)
+        assert.strictEqual(transferEventOne.to, nullAddress)
+        assert.strictEqual(transferEventOne.tokenId, '1')
+
+        assert.strictEqual(
+          transferEventTwo.from,
+          MockHomeWorkWrapper.options.address
+        )
+        assert.strictEqual(transferEventTwo.to, address)
+        assert.strictEqual(
+          transferEventTwo.tokenId,
+          web3.utils.toBN(address + 'f00f00f00f00f00f00f00f00').toString(10)
+        )
+      }
+    }
+  )
+
+  await runTest(
+    'HomeWork can call setApprovalForAll on the wrapper',
+    HomeWork,
+    'setApprovalForAll',
+    'send',
+    [
+      MockHomeWorkWrapper.options.address,
+      true
+    ],
+    true,
+    receipt => {
+      let approvalForAllEvent
+      if (testingContext === 'coverage') {
+        approvalForAllEvent = receipt.events.ApprovalForAll[0].returnValues
+      } else {
+        approvalForAllEvent = receipt.events.ApprovalForAll.returnValues
+      }
+
+      assert.strictEqual(approvalForAllEvent.owner, address)
+      assert.strictEqual(
+        approvalForAllEvent.operator,
+        MockHomeWorkWrapper.options.address
+      )
+      assert.ok(approvalForAllEvent.approved)
+    }
+  )
+
+  await runTest(
+    'HomeWork can call wrap once approved to send to wrapper',
+    MockHomeWorkWrapper,
+    'wrap',
+    'send',
+    [
+      address + 'f00f00f00f00f00f00f00f00',
+      address
+    ],
+    true,
+    receipt => {
+      if (testingContext !== 'coverage') {
+        let transferEventOne = receipt.events.Transfer[0].returnValues
+        let transferEventTwo = receipt.events.Transfer[1].returnValues
+
+        assert.strictEqual(transferEventOne.from, address)
+        assert.strictEqual(
+          transferEventOne.to,
+          MockHomeWorkWrapper.options.address
+        )
+        assert.strictEqual(
+          transferEventOne.tokenId,
+          web3.utils.toBN(address + 'f00f00f00f00f00f00f00f00').toString(10)
+        )
+
+        assert.strictEqual(transferEventTwo.from, nullAddress)
+        assert.strictEqual(transferEventTwo.to, address)
+        assert.strictEqual(transferEventTwo.tokenId, '2')
+      }
+    }
+  )
+
+  await runTest(
+    'HomeWork can call batchLock and mint two new NFTs',
+    HomeWork,
+    'batchLock',
+    'send',
+    [
+      address,
+      [
+        address + 'd00d00d00d00d00d00d00d00', 
+        address + 'e00e00e00e00e00e00e00e00'
+      ]
+    ],
+    true,
+    receipt => {
+      // TODO
+    }
+  )
+
+  await runTest(
+    'HomeWork call to safeBatchTransferFrom fails against uninherited wrapper',
+    HomeWork,
+    'safeBatchTransferFrom',
+    'send',
+    [
+      address,
+      MockUninheritedHomeWorkWrapper.options.address,
+      [
+        address + 'd00d00d00d00d00d00d00d00', 
+        address + 'e00e00e00e00e00e00e00e00'
+      ]
+    ],
+    false
+  )
 
   console.log(
     `completed ${passed + failed} test${passed + failed === 1 ? '' : 's'} ` +

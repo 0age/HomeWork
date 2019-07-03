@@ -9,6 +9,7 @@ module.exports = {
     'mock/MockContract.sol',
     'mock/MockERC20Stub.sol',
     'mock/MockERC721Holder.sol',
+    'mock/MockHomeWorkWrapper.sol',
     'mock/MockReentryPartOne.sol',
     'mock/MockReentryPartTwo.sol',
     'mock/MockRevertContract.sol',
