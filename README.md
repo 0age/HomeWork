@@ -18,7 +18,7 @@ HomeWork implements **ERC721**, and will take control of any home address withou
 
 **DISCLAIMER: this implements highly experimental features / bugs - Be careful! These contracts have not yet been fully tested or audited - proceed with caution and please share any exploits or optimizations you discover.**
 
-You can find HomeWork V1 at `0x0000000000001b84b1cb32787B0D64758d019317` *(yes, there are six zero bytes at the start)* on [mainnet](https://blockscout.com/eth/mainnet/address/0x0000000000001b84b1cb32787b0d64758d019317/contracts), [ropsten](https://ropsten.etherscan.io/address/0x0000000000001b84b1cb32787b0d64758d019317), [goerli](https://goerli.etherscan.io/address/0x0000000000001b84b1cb32787b0d64758d019317), [rinkeby](https://rinkeby.etherscan.io/address/0x0000000000001b84b1cb32787b0d64758d019317), and [kovan](https://kovan.etherscan.io/address/0x0000000000001b84b1cb32787b0d64758d019317).
+You can find HomeWork V1 at `0x0000000000001b84b1cb32787B0D64758d019317` *(yes, there are six zero bytes at the start)* on [mainnet](https://blockscout.com/eth/mainnet/address/0x0000000000001b84b1cb32787b0d64758d019317/contracts), [ropsten](https://blockscout.com/eth/ropsten/address/0x0000000000001b84b1cb32787b0d64758d019317/contracts), [goerli](https://goerli.etherscan.io/address/0x0000000000001b84b1cb32787b0d64758d019317), [rinkeby](https://rinkeby.etherscan.io/address/0x0000000000001b84b1cb32787b0d64758d019317), and [kovan](https://blockscout.com/eth/kovan/address/0x0000000000001b84b1cb32787b0d64758d019317/contracts).
 
 To learn more about HomeWork, check out [this article](https://medium.com/@0age/on-efficient-ethereum-transactions-introducing-homework-6ae4f21801ed).
 
