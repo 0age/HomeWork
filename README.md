@@ -2,15 +2,15 @@
 
 # HomeWork
 
-![GitHub](https://img.shields.io/github/license/0age/HomeWork.svg?colorB=brightgreen)
+[![GitHub](https://img.shields.io/github/license/0age/HomeWork.svg?colorB=brightgreen)](https://github.com/0age/HomeWork/blob/master/LICENSE.md)
 [![Build Status](https://travis-ci.org/0age/HomeWork.svg?branch=master)](https://travis-ci.org/0age/HomeWork)
 [![Coverage](https://coveralls.io/repos/github/0age/HomeWork/badge.svg?branch=master)](https://coveralls.io/github/0age/HomeWork?branch=master)
-[![standard-readme compliant](https://img.shields.io/badge/standard--readme-OK-green.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
+[![standard-readme compliant](https://img.shields.io/badge/standard--readme-OK-brightgreen.svg)](https://github.com/RichardLitt/standard-readme)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
 
 > HomeWork is an autonomous utility for finding, sharing and reusing home addresses for contracts.
 
-A **home address** is a dedicated account where a specific controller can deploy arbitrary contracts. Unlike a standard contract deployment, where the deployment address is determined by rigid factors like the nonce of the deployer or the contract's creation code, home address contract deployments relax the usual constraints and allow *any* contract to be deployed to a specific address.
+A **home address** is a dedicated account where a specific controller can deploy arbitrary contracts. Unlike a standard contract deployment, where the deployment address is determined by rigid factors like the nonce of the deployer or the contract's creation code, home address contract deployments relax the usual constraints and allow *any* contract to be deployed to a specific address, and for new contracts to be redeployed to the same address if the original contract is removed.
 
 Each home address is uniquely identified by a specific 32-byte **key**. Each key has a dedicated controller, an account with the exclusive right to deploy contracts to the corresponding home address. By default, each key is initially controlled by the account whose address matches the first twenty bytes of said key. Alternately, they can be derived using a full 32-byte salt for any submitting account. Control of keys can easily be transferred, either to other accounts and contracts, or to HomeWork itself by locking the home address and minting an NFT.
 
