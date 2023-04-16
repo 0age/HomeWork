@@ -16,3 +16,5 @@ script:
   - yarn coverage && cat coverage/lcov.info | coveralls
 cache:
   yarn: true
+
+# Added comment - 
